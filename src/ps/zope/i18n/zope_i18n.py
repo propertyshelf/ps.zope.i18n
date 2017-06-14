@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Patch adding plural support for zope.i18n."""
 
 # zope imports
 from zope.component import queryUtility
@@ -32,7 +33,7 @@ def translate(
     >>> import zope.i18n.interfaces
 
     >>> class TestDomain:
-    ...     interface.implements(zope.i18n.interfaces.ITranslationDomain)
+    ...     interface.implements(zope.i18n.interfaces.ITranslationDomain)  # noqa
     ...
     ...     def __init__(self, **catalog):
     ...         self.catalog = catalog
@@ -62,7 +63,7 @@ def translate(
 
     >>> def fallback(domain=u''):
     ...     return TestDomain(eek=u'test-from-' + domain)
-    >>> interface.directlyProvides(
+    >>> interface.directlyProvides(  # noqa
     ...     fallback,
     ...     zope.i18n.interfaces.IFallbackTranslationDomainFactory,
     ...     )
@@ -162,10 +163,11 @@ def _ungettext(self, singular, plural, n, default=None):
         return default
 
 
-def queryMessage(
-        self, msgid, default=None, plural=None, n=None, funcname=None):
+def queryMessage(  # noqa
+        self,
+        msgid,
+        default=None, plural=None, n=None, funcname=None):
     """See IMessageCatalog."""
-
     if isinstance(msgid, Message):
         if default is None:
             default = msgid.default
@@ -213,10 +215,11 @@ zope.i18n.simpletranslationdomain.SimpleTranslationDomain.__translate_orig = \
 def translate_std(
         self, msgid, mapping=None, context=None, target_language=None,
         default=None, plural=None, n=None):
-    '''See interface ITranslationDomain'''
+    """See interface ITranslationDomain"""
     return self.__translate_orig(
         msgid, mapping, context, target_language, default,
     )
+
 
 zope.i18n.simpletranslationdomain.SimpleTranslationDomain.translate = \
     translate_std
@@ -230,6 +233,7 @@ zope.i18n.testmessagecatalog.TestMessageCatalog.__queryMessage_orig = \
 def queryMessage_tmc(
         self, msgid, default=None, plural=None, n=None, funcname=None):
     return self.__queryMessage_orig(msgid, default)
+
 
 zope.i18n.testmessagecatalog.TestMessageCatalog.queryMessage = \
     queryMessage_tmc
@@ -285,8 +289,14 @@ class TranslationDomain(SimpleTranslationDomain):
         return self._recursive_translate(msgid, mapping, target_language,
                                          default, context, plural, n)
 
-    def _recursive_translate(self, msgid, mapping, target_language, default,
-                             context, plural=None, n=None, seen=None):
+    def _recursive_translate(  # noqa
+            self,
+            msgid,
+            mapping,
+            target_language,
+            default,
+            context,
+            plural=None, n=None, seen=None):
         """Recursively translate msg."""
         # MessageID attributes override arguments
         if isinstance(msgid, Message):
@@ -356,5 +366,6 @@ class TranslationDomain(SimpleTranslationDomain):
     def reloadCatalogs(self, catalogNames):
         for catalogName in catalogNames:
             self._data[catalogName].reload()
+
 
 zope.i18n.translationdomain.TranslationDomain = TranslationDomain
