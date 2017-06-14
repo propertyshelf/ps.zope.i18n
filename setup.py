@@ -6,7 +6,7 @@ from setuptools import (
     setup,
 )
 
-version = '0.1dev'
+version = '0.1.dev0'
 description = 'Plural support for zope.i18n.'
 long_description = ('\n'.join([
     open('README.rst').read(),
