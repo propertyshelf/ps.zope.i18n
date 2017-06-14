@@ -2,10 +2,15 @@ language: python
 python:
     - 2.6
     - 2.7
+sudo: false
+cache:
+  directories:
+    - eggs
 install:
-  - pip install setuptools -U
-  - python bootstrap.py
-  - bin/buildout -c travis.cfg
+  - sed -ie "s#versions-$TRAVIS_PYTHON_VERSION.x#versions#" travis.cfg
+  - pip install -r requirements.txt
+  - buildout -c travis.cfg annotate
+  - buildout -c travis.cfg -N -q
 branches:
   only:
     - master
@@ -13,4 +18,5 @@ script:
   - bin/code-analysis
   - bin/test
 notifications:
-  irc: irc.freenode.org#propertyshelf
+  hipchat:
+    secure: "bbubw9kTTCbr7Lk5+GeeinNt6BpeCPrJ/cSDYJYfYuQcB28n+NbzOvxcGNVyfTJtsxqRD41ZaqINS14xmurHzpg+h6GINIUY56WIQVXZSwO8dvR1IsRDPEy3oVqyHkVpQ18TqeA4k0tUno6spaI3pHT12iKvu2T/uhgphPD07qY="
